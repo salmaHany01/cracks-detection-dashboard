@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  <title>Crack Dashboard</title>
+  <link rel="icon" href="./dashboardIcon.png">
+  <link rel="stylesheet" href="angular.css">
+  <link rel="shortcut icon" href="http://cdn.sstatic.net/stackoverflow/img/favicon.ico">
+  <script src="https://fastly.jsdelivr.net/npm/echarts@5.3.3/dist/echarts.min.js"></script>
+  <link rel="stylesheet" href="https://js.arcgis.com/4.24/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/4.24/"></script>
+  <script src="./road.js"></script>
+  <script src="./road_type.js"></script>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar"
+    style="height:7% ;  border: 1px solid #009af2;    flex-direction: row-reverse;  background-color: #070923; color: white;">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="#" style="color: white; ">Cracks Detection System</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false" style="color: white; ">
+              Road Selector
+            </a>
+            <ul id="RoadSelector" class="dropdown-menu" aria-labelledby="navbarDropdown"
+              style="color: white; max-height: 400px; overflow-y: scroll;">
+
+            </ul>
+
+          </li>
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+              aria-expanded="false" style="color: white; ">
+              Crack Selector
+            </a>
+            <ul id="CrackSelector" class="dropdown-menu" aria-labelledby="navbarDropdown"
+              style="color: white; background-color: #070923; border: 1px solid #009af2;">
+            </ul>
+
+          </li>
+          <li>
+            <input type="text" class="form-control me-2" id="searchBox" onkeyup="searchFun()"
+              placeholder="Search by road name" style="color: white; margin-left: 50% ; background-color: #070923 ">
+          </li>
+        </ul>
+
+      </div>
+    </div>
+
+    <div class="btn-group dropright" id="btn-group_dropstart" style="    border: 1px solid #070923; ">
+      <button type="button" class="btn btn-secondary" data-bs-toggle="dropdown" aria-expanded="false"
+        style="background-color: #070923; border-radius: 0%; border: none;">
+        &#9776;
+      </button>
+      <ul class="dropdown-menu" style="background-color: #070923; color: white;">
+        <!-- Dropdown menu links -->
+        <li><button class="dropdown-item" style="color: white;">signed in as @username</button></li>
+        <!-- cracks operational dashboard temporarily -->
+        <li><button class="dropdown-item" type="button " style="color: white; text-decoration: none;"><a
+              href="https://www.arcgis.com/apps/dashboards/87fb8ae45ebd4c439f389f3388085643">Vehicle Detection
+              System</a> </button></li>
+        <li><button class="dropdown-item" type="button" style="color: white;">Sign out</button></li>
+      </ul>
+    </div>
+  </nav>
+
+
+  <div class="row w-100" style="margin: 0px;">
+    <div class="col-4" style="display: inline-grid; height:100%; padding: 0px; ">
+      <div class="rowOfcol1">
+        <div id="chart-container"></div>
+      </div>
+      <div class="rowOfcol1">
+        <div id="pie"></div>
+      </div>
+      <div class="rowOfcol1">
+        <div id="stacked"></div>
+      </div>
+
+    </div>
+    <div class="col-6 " style="height: 100% ;margin:0px; padding:0px ;">
+      <div class="row w-100" style="    margin:0px; padding:0px ;">
+        <div class="col-3">
+          <h6 style="text-align: center;">Accuracy </h6>
+          <div id="indicator1"
+            style="height: 100%; width: 100%; color: white; text-align:center; font-size: 72px; background-color: #070923;">
+          </div>
+        </div>
+        <div class="col-6">
+
+          <div id="gauge">
+            <p>Max speed</p>
+          </div>
+
+        </div>
+        <div class="col-3">
+          <h6>Total Cracks </h6>
+          <div id="indicator2" style="height: 100%; width: 100%; color: white; text-align:center; font-size: 72px;">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="id">
+        <div id="viewDiv"></div>
+      </div>
+
+    </div>
+    <div class="col-2" style="height:694px ; overflow: hidden; padding: 0px; margin: 0px; border: 1px solid #009af2;">
+      <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+          <button class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home"
+            type="button" role="tab" aria-controls="nav-home" aria-selected="true">Road status</button>
+          <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button"
+            role="tab" aria-controls="nav-profile" aria-selected="false">Road type</button>
+        </div>
+      </nav>
+      <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane  show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+          <div id="road_status"></div>
+        </div>
+        <div class="tab-pane show active" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+          <div id="road_type"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="angular.js"></script>
+</body>
+<style>
+  a:hover {
+    color: #0a58ca;
+  }
+</style>
+
+</html>
